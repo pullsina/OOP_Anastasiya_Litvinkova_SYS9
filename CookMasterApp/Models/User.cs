@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CookMasterApp.Models
 {
-    internal class User
+    public class User
     {
         //Property
         public string Username { get; set; }

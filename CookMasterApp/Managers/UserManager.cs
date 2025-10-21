@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace CookMasterApp.Managers
 {
-    internal class UserManager : INotifyPropertyChanged
+    public class UserManager : INotifyPropertyChanged
     {
-        private User _loggedInUser;
+        private User? _loggedInUser;
         private readonly List<User> _users = new();
         public bool IsAuthenticated => _loggedInUser != null;
         public User? LoggedInUser
@@ -28,14 +28,14 @@ namespace CookMasterApp.Managers
         //Methods
         public bool Login(string username, string password)
         {
-            foreach (User user in _users)
-            {
-                if (string.Equals(user.Username, username, StringComparison.OrdinalIgnoreCase) && user.Password == password)
+            User? user = FindUser(username);
+            
+                if (user != null && user.Password == password)
                 {
                     LoggedInUser = user;
                     return true;
                 }
-            }
+            
             return false;
         }
         public void Logout()
@@ -45,15 +45,13 @@ namespace CookMasterApp.Managers
 
         public bool Register(string username, string password, string country)
         {
-            //foreach (User user in _users)
-            //{
-            //    if (string.Equals(user.Username, username, StringComparison.OrdinalIgnoreCase))
-            //        return false;
-            //}
-
-            if (_users.Any(usr => string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase))
-                || string.IsNullOrWhiteSpace(username))
+            User? user = FindUser(username);
+            if (string.IsNullOrWhiteSpace(username))
                 return false;
+            else if (user != null)
+            {
+                return false;
+            }
             else if (password.Length < 8 || !password.Any(Char.IsDigit) || !password.Any(Char.IsSymbol)
                 || string.IsNullOrWhiteSpace(password))
                 return false;
@@ -65,6 +63,17 @@ namespace CookMasterApp.Managers
                 _users.Add(newUser);
                 return true;
             }
+        }
+
+        public User? FindUser(string username)
+        {
+            //foreach (User usr in _users)
+            //{
+            //    if (string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase))
+            //        return usr;
+            //    return null;
+            //}
+            return _users.FirstOrDefault(usr => string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase));
         }
 
 
