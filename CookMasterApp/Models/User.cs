@@ -13,6 +13,14 @@ namespace CookMasterApp.Models
         public string Password { get; set; }
         public string Country { get; set; }
 
+        //Constructor
+        public User (string Username, string Password, string Country)
+        {
+            this.Username = Username;
+            this.Password = Password;
+            this.Country = Country;
+        }
+
         //Methods 
         //ValidateLogin()
         //ChangePassword()
