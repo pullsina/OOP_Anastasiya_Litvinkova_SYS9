@@ -107,7 +107,16 @@ namespace CookMasterApp.Managers
             return LoggedInUser;
         }
 
+        public bool UpdateDetails(string currentUsername, string newUsername, string newCountry)
+        {
+            if (LoggedInUser == null)
+                return false;
 
+            bool occupied = _users.Any(u => !u.Username.Equals(LoggedInUser.Username, StringComparison.OrdinalIgnoreCase) && string.Equals(u.Username, newUsername, StringComparison.OrdinalIgnoreCase));
+            if (occupied)
+                return false;
+            return LoggedInUser.UpdateDetails(newUsername, newCountry);
+        }
 
 
 

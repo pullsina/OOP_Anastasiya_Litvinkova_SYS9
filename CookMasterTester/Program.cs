@@ -50,6 +50,31 @@ namespace CookMasterTester
             Console.WriteLine($"User kan logga in med nytt lösenord: {userLogin}");
 
 
+            Console.WriteLine("\n=== TESTAR UPDATE DETAILS ===");
+
+            // Logga in som 'user' (standardanvändaren från UserManager)
+            manager.Login("user", "password");
+
+            // Försök byta namn till något nytt
+            bool update1 = manager.UpdateDetails("user", "newuser", "Finland");
+            Console.WriteLine($"Byta till nytt namn lyckades: {update1}");
+
+            // Försök byta namn till ett som redan finns (admin)
+            bool update2 = manager.UpdateDetails("newuser", "admin", "Finland");
+            Console.WriteLine($"Byta till redan upptaget namn lyckades: {update2}");
+
+            // Försök behålla sitt namn men byta land
+            bool update3 = manager.UpdateDetails("newuser", "newuser", "Norway");
+            Console.WriteLine($"Behålla namn men byta land lyckades: {update3}");
+
+            // Kontrollera resultat
+            var updatedUser = manager.GetLoggedInUser();
+            Console.WriteLine($"Aktuell användare: {updatedUser?.Username}, Land: {updatedUser?.Country}");
+
+            var found = manager.FindUser("newuser");
+            Console.WriteLine($"FindUser hittade: {found?.Username}");
+
+
 
             Console.WriteLine("\nTest klar — tryck valfri tangent för att avsluta.");
             Console.ReadKey();

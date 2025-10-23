@@ -42,5 +42,21 @@ namespace CookMasterApp.Models
             return true;
         }
         //UpdateDitalis()
+        public bool UpdateDetails(string newUsername, string newCountry)
+        {
+           if (string.IsNullOrWhiteSpace(newUsername) || newUsername.Length < 3)
+                return false;
+            if (string.IsNullOrWhiteSpace(newCountry))
+                return false;
+
+            Username = newUsername.Trim();
+            Country = newCountry;
+            return true;
+
+            
+           
+           
+           
+        }
     }
 }
