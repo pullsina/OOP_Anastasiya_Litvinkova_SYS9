@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36429.23 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookMasterApp", "CookMasterApp\CookMasterApp.csproj", "{6A29D62B-FAF2-4AE8-97F7-7603176223BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookMasterTester", "CookMasterTester\CookMasterTester.csproj", "{B2B0D5A7-93D7-43B5-93C9-0010D19AAE99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6A29D62B-FAF2-4AE8-97F7-7603176223BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A29D62B-FAF2-4AE8-97F7-7603176223BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A29D62B-FAF2-4AE8-97F7-7603176223BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B0D5A7-93D7-43B5-93C9-0010D19AAE99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B0D5A7-93D7-43B5-93C9-0010D19AAE99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B0D5A7-93D7-43B5-93C9-0010D19AAE99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B0D5A7-93D7-43B5-93C9-0010D19AAE99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

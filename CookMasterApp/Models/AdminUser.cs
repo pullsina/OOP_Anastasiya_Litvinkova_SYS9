@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CookMasterApp.Models
 {
-    internal class AdminUser : User
+    public class AdminUser : User
     {
         //Constructor
         public AdminUser(string Username, string Password, string Country) : base(Username, Password, Country) { }

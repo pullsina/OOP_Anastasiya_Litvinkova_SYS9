@@ -12,7 +12,7 @@ namespace CookMasterApp.Managers
     public class UserManager : INotifyPropertyChanged
     {
         private User? _loggedInUser;
-        private readonly List<User> _users = new();
+        private readonly List<User> _users = new() ;
         public bool IsAuthenticated => _loggedInUser != null;
         public User? LoggedInUser
         {
@@ -24,7 +24,15 @@ namespace CookMasterApp.Managers
                 OnPropertyChanged(nameof(IsAuthenticated));
             }
         }
-
+        //Constructor
+        public UserManager ()
+        {
+            User admin = new AdminUser("admin", "password", "Sweden");
+            User defaultUser = new User("user", "password", "Sweden");
+            _users.Add(admin);
+            _users.Add(defaultUser);
+        }
+        
         //Methods
         public User? FindUser(string username)
         {
@@ -61,7 +69,7 @@ namespace CookMasterApp.Managers
                 return false;
 
             bool hasDigit = password.Any(char.IsDigit);
-            bool hasSymbol = password.Any(char.IsSymbol);
+            bool hasSymbol = password.Any(char.IsSymbol) || password.Any(char.IsPunctuation);
             bool hasLetter = password.Any(char.IsLetter);
             return password.Length >= 8 && hasDigit && hasSymbol && hasLetter;
         }
