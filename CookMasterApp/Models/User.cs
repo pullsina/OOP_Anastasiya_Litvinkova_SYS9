@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CookMasterApp.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,23 @@ namespace CookMasterApp.Models
 
         //Methods 
         //ValidateLogin()
+        public bool ValidateLogin (string username, string password)
+        {
+            return string.Equals(Username, username, StringComparison.OrdinalIgnoreCase)
+                && Password == password;
+        }
+
+
         //ChangePassword()
+        public bool ChangePassword(string oldPassword, string newPassword)
+        {          
+            if (Password != oldPassword)
+                return false;
+            if (!UserManager.IsPasswordValid(newPassword))
+                return false;
+            Password = newPassword;
+            return true;
+        }
         //UpdateDitalis()
     }
 }
