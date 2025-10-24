@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 
 namespace CookMasterApp.Models
 {
-    internal class Recipe
+    public class Recipe
     {
         //properties
         public string Title { get; set; }
-        public string Ingredients { get; set; }
+        public List<string> Ingredients { get; set; } = new();
+        public string IngredientsListText => string.Join(", ", Ingredients);
         public string Instructions { get; set; }
         public string Category { get; set; }
         public DateTime Date { get; set; }
         public User CreatedBy { get; set; }
 
         //Constructor
-        public Recipe(string title, string ingredients, string instructions, string category, User createdBy)
+        public Recipe() { }
+        public Recipe(string title, List <string> ingredients, string instructions, string category, User createdBy)
         {
             Title = title;
-            Ingredients = ingredients;
+            Ingredients = ingredients ?? new List<string>();//använder listan om det finns annars skapar en ny
             Instructions = instructions;
             Category = category;
             CreatedBy = createdBy;
@@ -30,7 +32,7 @@ namespace CookMasterApp.Models
 
         //Methods 
         //EditRecipe()
-        public void EditRecipe(string newTitle, string newIngredients, string newInstructions, string newCategory)
+        public void EditRecipe(string newTitle, List<string> newIngredients, string newInstructions, string newCategory)
         {
             Title = newTitle;
             Ingredients = newIngredients;
@@ -38,11 +40,25 @@ namespace CookMasterApp.Models
             Category = newCategory;
             Date = DateTime.Now;
         }
+        public void EditRecipe (Recipe editedRecipe)
+        {
+            Title = editedRecipe.Title;
+            Ingredients = editedRecipe.Ingredients;
+            Instructions = editedRecipe.Instructions;
+            Category = editedRecipe.Category;
+            Date = DateTime.Now;
+        }
+        public void EditRecipe ()
+        {
+            Date = DateTime.Now;
+        }
+
 
         //CopyRecipy ()
-        public Recipe CopyRecipy ()
+        public Recipe CopyRecipe ()
         {
-            return new Recipe(Title, Ingredients, Instructions, Category, CreatedBy);
+            return new Recipe(Title, new List <string> (Ingredients), Instructions, Category, CreatedBy);           
+
         }
 
     }
