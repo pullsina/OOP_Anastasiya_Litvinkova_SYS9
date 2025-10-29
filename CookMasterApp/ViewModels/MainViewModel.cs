@@ -16,7 +16,21 @@ namespace CookMasterApp.ViewModels
     internal class MainViewModel : INotifyPropertyChanged
     {
         //props
-        public string Username { get; set; }
+        private string _username;
+       
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+            set
+            {
+                _username = value;
+                OnPropertyChanged(nameof(Username));
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
         public string Message { get; set; }
         public ICommand LoginCommand { get; }
         public ICommand OpenRegisterCommand { get; }
@@ -33,7 +47,7 @@ namespace CookMasterApp.ViewModels
         public MainViewModel()
         {
             _userManager = new UserManager();
-            LoginCommand = new RelayCommand(Login);
+            LoginCommand = new RelayCommand(Login, CanLogin);
             OpenRegisterCommand = new RelayCommand(OpenRegister);
             ForgotPasswordCommand = new RelayCommand(ResetPassword);
         }
@@ -60,8 +74,12 @@ namespace CookMasterApp.ViewModels
             {
                 Message = "Invalid username or password.";
                 OnPropertyChanged(nameof(Message));
-            }             
-                
+            }                            
+        }
+        private bool CanLogin (object parameter)
+        {
+            string password = parameter as string;
+            return !string.IsNullOrWhiteSpace(Username);
         }
         private void OpenRegister(object parameter)
         {

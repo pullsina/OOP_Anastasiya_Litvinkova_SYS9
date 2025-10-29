@@ -9,7 +9,6 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-
     <Grid Background="#d6bea4">
         <StackPanel>
             <Label Content="CookMaster"
