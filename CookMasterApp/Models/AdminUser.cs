@@ -10,7 +10,7 @@ namespace CookMasterApp.Models
     public class AdminUser : User
     {
         //Constructor
-        public AdminUser(string Username, string Password, string Country) : base(Username, Password, Country) { }
+        public AdminUser(string username, string password, string country) : base(username, password, country) { }
         //Methods
 
         //ChangePassword - finns inte i diagram
@@ -25,7 +25,15 @@ namespace CookMasterApp.Models
             return true;
         }
         //RemoveAnyRecipe()
-
+        public void RemoveAnyRecipe (RecipeManager recipeManager, Recipe recipe)
+        {
+            recipeManager.RemoveRecipe(recipe);
+        }
         //viewAllRecipes()
+        public List<Recipe> ViewAllRecipes(RecipeManager recipeManager)
+        {
+            return recipeManager.GetAllRecipes();
+        }
+
     }
 }

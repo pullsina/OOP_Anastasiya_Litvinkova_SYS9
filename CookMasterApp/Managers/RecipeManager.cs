@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CookMasterApp.Managers
 {
-    internal class RecipeManager : INotifyPropertyChanged
+    public class RecipeManager : INotifyPropertyChanged
     {
         private readonly List<Recipe> _recipes = new();
         public IEnumerable<Recipe> Recipes { get { return _recipes; } }
