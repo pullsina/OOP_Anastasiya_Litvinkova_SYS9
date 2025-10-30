@@ -9,6 +9,7 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
+    <ScrollViewer>
     <Grid Background="#d6bea4">
         <StackPanel>
             <Label Content="CookMaster"
@@ -99,5 +100,6 @@
             </Grid>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 
 </Window>

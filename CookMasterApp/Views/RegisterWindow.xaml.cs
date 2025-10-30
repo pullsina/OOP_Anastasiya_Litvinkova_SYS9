@@ -23,5 +23,9 @@ namespace CookMasterApp.Views
         {
             InitializeComponent();
         }
+        private void PasswordBox_OnChanged(object sender, RoutedEventArgs e)
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

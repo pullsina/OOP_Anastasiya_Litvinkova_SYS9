@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookMasterApp.Views"
+        xmlns:vm="clr-namespace:CookMasterApp.ViewModels"
         mc:Ignorable="d"
         Title="RegisterWindow" Height="450" Width="800">
-    <Grid>
+    <Window.DataContext>
+        <vm:RegisterViewModel/>
+    </Window.DataContext>
+    <ScrollViewer>
         <Grid Background="#d6bea4">
             <StackPanel>
                 <Label Content="CookMaster"
@@ -16,6 +20,7 @@
             HorizontalAlignment="Center"/>
                 <Grid Background="#efe2da" Margin="70,0,70,50">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -55,13 +60,15 @@
                             FontWeight="Medium"
                             Margin="0, 0, 20, 0"/>
                         <PasswordBox  x:Name="PasswordBox"
+                            PasswordChanged="PasswordBox_OnChanged"
                             Width="400" 
                             HorizontalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Grid.Row="3" Margin="15, 0, 0, 10" 
                          Orientation="Horizontal"
                          HorizontalAlignment="Left">
-                        <TextBlock Text="Repeat password:"
+                        <TextBlock                   
+                            Text="Repeat password:"
                             Foreground="#312d2a"
                             Width="160"
                             HorizontalAlignment="Left"
@@ -69,6 +76,7 @@
                             FontWeight="Medium"
                             Margin="0, 0, 20, 0"/>
                         <PasswordBox  x:Name="PasswordBox2"
+                                      PasswordChanged="PasswordBox_OnChanged"
                             Width="400" 
                             HorizontalAlignment="Center"/>
                     </StackPanel>
@@ -84,7 +92,9 @@
                             Margin="0, 0, 20, 0"/>
                         <ComboBox   
                             Width="400" 
-                            HorizontalAlignment="Center"/>
+                            HorizontalAlignment="Center"
+                            ItemsSource="{Binding Countries}"
+                            SelectedItem="{Binding SelectedCountry}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="5" Margin="15, 0, 0, 10" 
                          Orientation="Horizontal"
@@ -98,7 +108,9 @@
                             Margin="0, 0, 20, 0"/>
                         <ComboBox   
                             Width="400" 
-                            HorizontalAlignment="Center"/>
+                            HorizontalAlignment="Center"
+                            ItemsSource="{Binding SecurityQuestions}"
+                            SelectedItem="{Binding SelectedSecurityQuestion}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="6" Margin="15, 0, 0, 10" 
                          Orientation="Horizontal"
@@ -110,7 +122,7 @@
                             FontWeight="Medium"
                             Margin="0, 0, 20, 0"/>
                         <TextBox  Width="400" 
-                           Text="{Binding Username, 
+                           Text="{Binding SecurityAnswer, 
                            UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
@@ -122,17 +134,18 @@
                          Margin="10"
                          BorderBrush="#ac371e"
                          FontWeight="ExtraBlack"
-                         Command=""/>
-                        <Button Content="Return to login" 
+                         Command="{Binding RegisterCommand}"
+                         CommandParameter="{Binding ElementName=PasswordBox}"/>
+                        <Button Content="Cancel" 
                          Width="100"
                          Height="30"
                          Margin="10"
                          BorderBrush="#ac371e"
-                         FontWeight="ExtraBlack"
-                         Command=""/>
+                         FontWeight="ExtraBlack"                        
+                         Command="{Binding ReturnToMainCommand}"/>
 
                     </StackPanel>
-                    <StackPanel Grid.Row="5" Orientation="Horizontal"
+                    <StackPanel Grid.Row="8" Orientation="Horizontal"
                          HorizontalAlignment="Center">
                         <TextBlock Text="{Binding Message}"
                             Foreground="Red"
@@ -143,5 +156,5 @@
                 </Grid>
             </StackPanel>
         </Grid>
-    </Grid>
+    </ScrollViewer>
 </Window>

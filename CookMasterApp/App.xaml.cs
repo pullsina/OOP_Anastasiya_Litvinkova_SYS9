@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using CookMasterApp.Managers;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
@@ -9,6 +10,7 @@ namespace CookMasterApp
     /// </summary>
     public partial class App : Application
     {
+        public static UserManager SharedUserManager { get; } = new UserManager();
     }
 
 }

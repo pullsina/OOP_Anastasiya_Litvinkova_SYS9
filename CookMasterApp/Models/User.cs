@@ -13,13 +13,17 @@ namespace CookMasterApp.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Country { get; set; }
+        public string SecurityQuestion { get; set; }
+        public string SecurityAnswer { get; set; }
 
         //Constructor
-        public User (string Username, string Password, string Country)
+        public User (string Username, string Password, string Country, string SecurityQuestion, string securityAnswer)
         {
             this.Username = Username;
             this.Password = Password;
             this.Country = Country;
+            this.SecurityQuestion = SecurityQuestion;
+            this.SecurityAnswer = SecurityAnswer;
         }
 
         //Methods 
@@ -51,12 +55,7 @@ namespace CookMasterApp.Models
 
             Username = newUsername.Trim();
             Country = newCountry;
-            return true;
-
-            
-           
-           
-           
+            return true;                    
         }
     }
 }

@@ -10,7 +10,8 @@ namespace CookMasterApp.Models
     public class AdminUser : User
     {
         //Constructor
-        public AdminUser(string username, string password, string country) : base(username, password, country) { }
+        public AdminUser(string username, string password, string country, string securityQuestion, string securityAnswer) : 
+        base(username, password, country, securityQuestion, securityAnswer) { }
         //Methods
 
         //ChangePassword - finns inte i diagram

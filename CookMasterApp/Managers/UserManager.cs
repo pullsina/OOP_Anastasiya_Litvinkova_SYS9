@@ -12,7 +12,9 @@ namespace CookMasterApp.Managers
     public class UserManager : INotifyPropertyChanged
     {
         private User? _loggedInUser;
-        private readonly List<User> _users = new() ;
+        private readonly List<User> _users = new();
+
+
         public bool IsAuthenticated => _loggedInUser != null;
         public User? LoggedInUser
         {
@@ -25,14 +27,14 @@ namespace CookMasterApp.Managers
             }
         }
         //Constructor
-        public UserManager ()
+        public UserManager()
         {
-            User admin = new AdminUser("admin", "password", "Sweden");
-            User defaultUser = new User("user", "password", "Sweden");
+            User admin = new AdminUser("admin", "password", "Sweden", "What is your favorite food?", "Food");
+            User defaultUser = new User("user", "password", "Sweden", "What is your favorite food?", "Milk");
             _users.Add(admin);
             _users.Add(defaultUser);
         }
-        
+
         //Methods
         public User? FindUser(string username)
         {
@@ -48,13 +50,13 @@ namespace CookMasterApp.Managers
         public bool Login(string username, string password)
         {
             User? user = FindUser(username);
-            
-                if (user != null && user.ValidateLogin(username, password))
-                {
-                    LoggedInUser = user;
-                    return true;
-                }
-            
+
+            if (user != null && user.ValidateLogin(username, password))
+            {
+                LoggedInUser = user;
+                return true;
+            }
+
             return false;
         }
         public void Logout()
@@ -74,35 +76,36 @@ namespace CookMasterApp.Managers
             return password.Length >= 8 && hasDigit && hasSymbol && hasLetter;
         }
 
-        public bool Register(string username, string password, string country)
+        public bool Register(string username, string password, string country, string question, string answer)
         {
             User? user = FindUser(username);
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(username)
+                || string.IsNullOrWhiteSpace(password)
+                || string.IsNullOrWhiteSpace(country)
+                || string.IsNullOrWhiteSpace(question)
+                || string.IsNullOrWhiteSpace(answer))
                 return false;
-            else if (user != null)
+            if (user != null)
             {
                 return false;
             }
-            else if (!IsPasswordValid(password))
+            if (!IsPasswordValid(password))
                 return false;
-            else if (string.IsNullOrWhiteSpace(country))
-                return false;
-            else
-            {
-                User newUser = new User(username, password, country);
-                _users.Add(newUser);
-                return true;
-            }
+
+            User newUser = new User(username, password, country, question, answer);
+            _users.Add(newUser);
+            return true;
+
         }
 
-        public bool ChangePassword (string oldPassword, string newPassword)
+        public bool ChangePassword(string oldPassword, string newPassword)
         {
             if (LoggedInUser == null)
                 return false;
             return LoggedInUser.ChangePassword(oldPassword, newPassword);
         }
-      
-        public User? GetLoggedInUser ()
+
+        public User? GetLoggedInUser()
         {
             return LoggedInUser;
         }
@@ -117,7 +120,6 @@ namespace CookMasterApp.Managers
                 return false;
             return LoggedInUser.UpdateDetails(newUsername, newCountry);
         }
-
 
 
 

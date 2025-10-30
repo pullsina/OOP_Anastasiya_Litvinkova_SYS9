@@ -23,5 +23,6 @@ namespace CookMasterApp.Views
         {
             InitializeComponent();
         }
+
     }
 }

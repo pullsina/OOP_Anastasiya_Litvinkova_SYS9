@@ -2,11 +2,9 @@
 using CookMasterApp.Views;
 using MVVM_KlonaMIg.MVVM;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -46,21 +44,31 @@ namespace CookMasterApp.ViewModels
         //Constructor
         public MainViewModel()
         {
-            _userManager = new UserManager();
+            _userManager = App.SharedUserManager;
+            LoginCommand = new RelayCommand(Login, CanLogin);
+            OpenRegisterCommand = new RelayCommand(OpenRegister);
+            ForgotPasswordCommand = new RelayCommand(ResetPassword);
+        }
+        public MainViewModel(UserManager sharedManager)
+        {
+            _userManager = sharedManager;
             LoginCommand = new RelayCommand(Login, CanLogin);
             OpenRegisterCommand = new RelayCommand(OpenRegister);
             ForgotPasswordCommand = new RelayCommand(ResetPassword);
         }
 
+
         //Methods
-        private void Login(object parameter)
+        private async void Login(object parameter)
         {
             string password = parameter as string ?? ""; //telling WPF that our parameter is a string/password or ""
             bool success = _userManager.Login(Username, password);
             if (success)
             {
                 //Open RecipeListWindow
-                Message = "";
+                Message = "Login successful!";
+                OnPropertyChanged(nameof(Message));
+                await Task.Delay(500); // halv sekunds paus
                 var recipeList = new RecipeListWindow();
                 recipeList.Show();
 
@@ -76,15 +84,17 @@ namespace CookMasterApp.ViewModels
                 OnPropertyChanged(nameof(Message));
             }                            
         }
-        private bool CanLogin (object parameter)
-        {
-            string password = parameter as string;
+        private bool CanLogin (object property)
+        {            
             return !string.IsNullOrWhiteSpace(Username);
         }
         private void OpenRegister(object parameter)
         {
             //Open RegisterWindow
-            var registerWindow = new RegisterWindow();
+            var registerWindow = new RegisterWindow
+            {
+                DataContext = new RegisterViewModel(_userManager)
+            };
             registerWindow.Show();
             //Close MainWindow
             foreach (var w in System.Windows.Application.Current.Windows)
