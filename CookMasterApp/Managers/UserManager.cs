@@ -12,7 +12,7 @@ namespace CookMasterApp.Managers
     public class UserManager : INotifyPropertyChanged
     {
         private User? _loggedInUser;
-        private readonly List<User> _users = new();
+        private  List<User> _users;
 
 
         public bool IsAuthenticated => _loggedInUser != null;
@@ -29,6 +29,7 @@ namespace CookMasterApp.Managers
         //Constructor
         public UserManager()
         {
+            _users = new List<User>();
             User admin = new AdminUser("admin", "password", "Sweden", "What is your favorite food?", "Food");
             User defaultUser = new User("user", "password", "Sweden", "What is your favorite food?", "Milk");
             _users.Add(admin);
@@ -36,16 +37,23 @@ namespace CookMasterApp.Managers
         }
 
         //Methods
+        //public User? FindUser(string username)
+        //{
+        //    //foreach (User usr in _users)
+        //    //{
+        //    //    if (string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase))
+        //    //        return usr;
+        //    //    return null;
+        //    //}
+        //    return _users.FirstOrDefault(usr => string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase));
+        //}
+
         public User? FindUser(string username)
         {
-            //foreach (User usr in _users)
-            //{
-            //    if (string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase))
-            //        return usr;
-            //    return null;
-            //}
+            System.Diagnostics.Debug.WriteLine($"DEBUG: Searching for user '{username}' in list of {_users.Count} users...");
             return _users.FirstOrDefault(usr => string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase));
         }
+
 
         public bool Login(string username, string password)
         {
@@ -59,6 +67,9 @@ namespace CookMasterApp.Managers
 
             return false;
         }
+
+       
+
         public void Logout()
         {
             LoggedInUser = null;
@@ -120,6 +131,7 @@ namespace CookMasterApp.Managers
                 return false;
             return LoggedInUser.UpdateDetails(newUsername, newCountry);
         }
+
 
 
 

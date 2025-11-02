@@ -23,6 +23,14 @@ namespace CookMasterApp.Views
         {
             InitializeComponent();
         }
+        private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.MainViewModel vm)
+            {
+                vm.Password = ((PasswordBox)sender).Password;
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
 
     }
 }

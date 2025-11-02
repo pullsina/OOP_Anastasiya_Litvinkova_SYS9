@@ -29,6 +29,17 @@ namespace CookMasterApp.ViewModels
                 CommandManager.InvalidateRequerySuggested();
             }
         }
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value;
+                OnPropertyChanged(nameof(Password));
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
         public string Message { get; set; }
         public ICommand LoginCommand { get; }
         public ICommand OpenRegisterCommand { get; }
@@ -61,7 +72,7 @@ namespace CookMasterApp.ViewModels
         //Methods
         private async void Login(object parameter)
         {
-            string password = parameter as string ?? ""; //telling WPF that our parameter is a string/password or ""
+            string password = Password ?? "";
             bool success = _userManager.Login(Username, password);
             if (success)
             {
