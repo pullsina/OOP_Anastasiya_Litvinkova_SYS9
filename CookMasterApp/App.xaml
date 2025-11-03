@@ -4,8 +4,6 @@
              xmlns:managers="clr-namespace:CookMasterApp.Managers"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        <Style x:Key="BaseInputStyle">
-            <Setter Property="Wid"
-        </Style>
+        
     </Application.Resources>
 </Application>
