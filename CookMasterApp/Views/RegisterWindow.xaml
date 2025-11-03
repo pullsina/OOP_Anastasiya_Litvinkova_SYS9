@@ -3,21 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CookMasterApp.Views"
         xmlns:vm="clr-namespace:CookMasterApp.ViewModels"
         mc:Ignorable="d"
-        Title="RegisterWindow" Height="450" Width="800">
+        Title="RegisterWindow" Height="550" Width="800">
+
     <Window.DataContext>
         <vm:RegisterViewModel/>
     </Window.DataContext>
+
     <ScrollViewer>
         <Grid Background="#d6bea4">
             <StackPanel>
+                <!-- HEADER -->
                 <Label Content="CookMaster"
-            FontSize="50"
-            FontWeight="ExtraBold"
-            Foreground="#ac371e"
-            HorizontalAlignment="Center"/>
+                       FontSize="50"
+                       FontWeight="ExtraBold"
+                       Foreground="#ac371e"
+                       HorizontalAlignment="Center"/>
+
                 <Grid Background="#efe2da" Margin="70,0,70,50">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -29,129 +32,119 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+
                     <Label Content="Register"
-                FontSize="30"
-                FontWeight="ExtraBold"
-                Foreground="#3A464B"
-                HorizontalAlignment="Center"
-                Margin="0, 10, 0, 30"/>
-                    <StackPanel Grid.Row="1" Margin="15, 0, 0, 10" 
-                         Orientation="Horizontal"
-                         HorizontalAlignment="Left">
+                           FontSize="30"
+                           FontWeight="ExtraBold"
+                           Foreground="#3A464B"
+                           HorizontalAlignment="Center"
+                           Margin="0, 10, 0, 30"/>
+
+                    <!-- USERNAME -->
+                    <StackPanel Grid.Row="1" Margin="15, 0, 0, 10">
                         <TextBlock Text="Enter username:"
-                            Foreground="#312d2a" 
-                            Width="160"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Margin="0, 0, 20, 0"/>
-                        <TextBox  Width="400" 
-                           Text="{Binding Username, 
-                           UpdateSourceTrigger=PropertyChanged}"/>
+                                   Foreground="#312d2a"
+                                   FontSize="20"
+                                   FontWeight="Medium"/>
+                        <TextBox Width="400"
+                                 Height="30"
+                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="{Binding UsernameMessage}"
+                                   Foreground="Red"
+                                   FontSize="12"
+                                   Margin="0,5,0,0"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Margin="15, 0, 0, 10" 
-                         Orientation="Horizontal"
-                         HorizontalAlignment="Left">
+
+                    <!-- PASSWORD -->
+                    <StackPanel Grid.Row="2" Margin="15, 0, 0, 10">
                         <TextBlock Text="Enter password:"
-                            Foreground="#312d2a"
-                            Width="160"
-                            HorizontalAlignment="Left"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Margin="0, 0, 20, 0"/>
-                        <PasswordBox  x:Name="PasswordBox"
-                            PasswordChanged="PasswordBox_OnChanged"
-                            Width="400" 
-                            HorizontalAlignment="Center"/>
+                                   Foreground="#312d2a"
+                                   FontSize="20"
+                                   FontWeight="Medium"/>
+                        <PasswordBox x:Name="PasswordBox"
+                                     PasswordChanged="PasswordBox_OnChanged"
+                                     Width="400"/>
+                        <TextBlock Text="{Binding PasswordMessage}"
+                                   Foreground="Red"
+                                   FontSize="12"
+                                   Margin="0,5,0,0"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="3" Margin="15, 0, 0, 10" 
-                         Orientation="Horizontal"
-                         HorizontalAlignment="Left">
-                        <TextBlock                   
-                            Text="Repeat password:"
-                            Foreground="#312d2a"
-                            Width="160"
-                            HorizontalAlignment="Left"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Margin="0, 0, 20, 0"/>
-                        <PasswordBox  x:Name="PasswordBox2"
-                                      PasswordChanged="PasswordBox_OnChanged"
-                            Width="400" 
-                            HorizontalAlignment="Center"/>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <StackPanel Grid.Row="3" Margin="15, 0, 0, 10">
+                        <TextBlock Text="Repeat password:"
+                                   Foreground="#312d2a"
+                                   FontSize="20"
+                                   FontWeight="Medium"/>
+                        <PasswordBox x:Name="PasswordBox2"
+                                     PasswordChanged="PasswordBox_OnChanged"
+                                     Width="400"/>
+                        <TextBlock Text="{Binding ConfirmPasswordMessage}"
+                                   Foreground="{Binding ConfirmPasswordColor}"
+                                   FontSize="12"
+                                   Margin="0,5,0,0"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="4" Margin="15, 0, 0, 10" 
-                         Orientation="Horizontal"
-                         HorizontalAlignment="Left">
+
+                    <!-- COUNTRY -->
+                    <StackPanel Grid.Row="4" Margin="15, 0, 0, 10">
                         <TextBlock Text="Country:"
-                            Foreground="#312d2a"
-                            Width="160"
-                            HorizontalAlignment="Left"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Margin="0, 0, 20, 0"/>
-                        <ComboBox   
-                            Width="400" 
-                            HorizontalAlignment="Center"
-                            ItemsSource="{Binding Countries}"
-                            SelectedItem="{Binding SelectedCountry}"/>
+                                   Foreground="#312d2a"
+                                   FontSize="20"
+                                   FontWeight="Medium"/>
+                        <ComboBox Width="400"
+                                  ItemsSource="{Binding Countries}"
+                                  SelectedItem="{Binding SelectedCountry}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="5" Margin="15, 0, 0, 10" 
-                         Orientation="Horizontal"
-                         HorizontalAlignment="Left">
+
+                    <!-- SECURITY QUESTION -->
+                    <StackPanel Grid.Row="5" Margin="15, 0, 0, 10">
                         <TextBlock Text="Security question:"
-                            Foreground="#312d2a"
-                            Width="160"
-                            HorizontalAlignment="Left"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Margin="0, 0, 20, 0"/>
-                        <ComboBox   
-                            Width="400" 
-                            HorizontalAlignment="Center"
-                            ItemsSource="{Binding SecurityQuestions}"
-                            SelectedItem="{Binding SelectedSecurityQuestion}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="6" Margin="15, 0, 0, 10" 
-                         Orientation="Horizontal"
-                         HorizontalAlignment="Left">
-                        <TextBlock Text="Enter you answer:"
-                            Foreground="#312d2a" 
-                            Width="160"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Margin="0, 0, 20, 0"/>
-                        <TextBox  Width="400" 
-                           Text="{Binding SecurityAnswer, 
-                           UpdateSourceTrigger=PropertyChanged}"/>
+                                   Foreground="#312d2a"
+                                   FontSize="20"
+                                   FontWeight="Medium"/>
+                        <ComboBox Width="400"
+                                  ItemsSource="{Binding SecurityQuestions}"
+                                  SelectedItem="{Binding SelectedSecurityQuestion}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="7" Orientation="Horizontal"
-                         HorizontalAlignment="Center">
-                        <Button Content="Register" 
-                         Width="100"
-                         Height="30"
-                         Margin="10"
-                         BorderBrush="#ac371e"
-                         FontWeight="ExtraBlack"
-                         Command="{Binding RegisterCommand}"
-                         CommandParameter="{Binding ElementName=PasswordBox}"/>
-                        <Button Content="Cancel" 
-                         Width="100"
-                         Height="30"
-                         Margin="10"
-                         BorderBrush="#ac371e"
-                         FontWeight="ExtraBlack"                        
-                         Command="{Binding ReturnToMainCommand}"/>
-
+                    <!-- SECURITY ANSWER -->
+                    <StackPanel Grid.Row="6" Margin="15, 0, 0, 10">
+                        <TextBlock Text="Enter your answer:"
+                                   Foreground="#312d2a"
+                                   FontSize="20"
+                                   FontWeight="Medium"/>
+                        <TextBox Width="400"
+                                 Text="{Binding SecurityAnswer, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="8" Orientation="Horizontal"
-                         HorizontalAlignment="Center">
+
+                    <!-- BUTTONS -->
+                    <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                        <Button Content="Register"
+                                Width="100"
+                                Height="30"
+                                Margin="10"
+                                BorderBrush="#ac371e"
+                                FontWeight="ExtraBlack"
+                                Command="{Binding RegisterCommand}"
+                                CommandParameter="{Binding ElementName=PasswordBox}"/>
+                        <Button Content="Cancel"
+                                Width="100"
+                                Height="30"
+                                Margin="10"
+                                BorderBrush="#ac371e"
+                                FontWeight="ExtraBlack"
+                                Command="{Binding ReturnToMainCommand}"/>
+                    </StackPanel>
+
+                    <!-- RESULT MESSAGES -->
+                    <StackPanel Grid.Row="8" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,0">
                         <TextBlock Text="{Binding Message}"
-                            Foreground="Red"
-                            FontSize="13"
-                            FontWeight="Bold"
-                            Margin="10"/>
+                                   Foreground="{Binding MessageColor}"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Margin="5"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>

@@ -37,14 +37,18 @@ namespace CookMasterApp.Models
 
         //ChangePassword()
         public bool ChangePassword(string oldPassword, string newPassword)
-        {          
+        {
             if (Password != oldPassword)
                 return false;
-            if (!UserManager.IsPasswordValid(newPassword))
+
+            var (isValid, message) = UserManager.IsPasswordValid(newPassword);
+            if (!isValid)
                 return false;
+
             Password = newPassword;
             return true;
         }
+
         //UpdateDitalis()
         public bool UpdateDetails(string newUsername, string newCountry)
         {

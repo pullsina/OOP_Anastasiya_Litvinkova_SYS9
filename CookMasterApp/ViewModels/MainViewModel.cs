@@ -40,7 +40,8 @@ namespace CookMasterApp.ViewModels
                 CommandManager.InvalidateRequerySuggested();
             }
         }
-        public string Message { get; set; }
+        public string ErrorMessage { get; set; }
+        public string SuccessMessage { get; set; }
         public ICommand LoginCommand { get; }
         public ICommand OpenRegisterCommand { get; }
         public ICommand ForgotPasswordCommand { get; }
@@ -74,11 +75,15 @@ namespace CookMasterApp.ViewModels
         {
             string password = Password ?? "";
             bool success = _userManager.Login(Username, password);
+            ErrorMessage = "";
+            SuccessMessage = "";
+            OnPropertyChanged(nameof(ErrorMessage));
+            OnPropertyChanged(nameof(SuccessMessage));
             if (success)
             {
                 //Open RecipeListWindow
-                Message = "Login successful!";
-                OnPropertyChanged(nameof(Message));
+                SuccessMessage = "Login successful!";
+                OnPropertyChanged(nameof(SuccessMessage));
                 await Task.Delay(500); // halv sekunds paus
                 var recipeList = new RecipeListWindow();
                 recipeList.Show();
@@ -91,8 +96,8 @@ namespace CookMasterApp.ViewModels
             }
             else
             {
-                Message = "Invalid username or password.";
-                OnPropertyChanged(nameof(Message));
+                ErrorMessage = "Invalid username or password.";
+                OnPropertyChanged(nameof(ErrorMessage));
             }                            
         }
         private bool CanLogin (object property)

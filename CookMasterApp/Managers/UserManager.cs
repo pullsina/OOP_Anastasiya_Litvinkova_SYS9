@@ -76,38 +76,45 @@ namespace CookMasterApp.Managers
         }
 
         //IsPasswordValid (finns inte i diagrammet)
-        public static bool IsPasswordValid(string password)
+        public static (bool isValid, string message) IsPasswordValid(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                return false;
-
-            bool hasDigit = password.Any(char.IsDigit);
-            bool hasSymbol = password.Any(char.IsSymbol) || password.Any(char.IsPunctuation);
-            bool hasLetter = password.Any(char.IsLetter);
-            return password.Length >= 8 && hasDigit && hasSymbol && hasLetter;
+                return (false, "Password cannot be empty.");
+            if (password.Length < 8)
+                return (false, "Password must be at least 8 characters.");
+            if (!password.Any(char.IsDigit))
+                return (false, "Password must contain at least one digit.");
+            if (!password.Any(char.IsSymbol) && !password.Any(char.IsPunctuation))
+                return (false, "Password must contain at least one symbol.");
+            if (!password.Any(char.IsLetter))
+                return (false, "Password must contain at least one letter.");
+            return (true, "");
         }
 
-        public bool Register(string username, string password, string country, string question, string answer)
+
+        public (bool success, string message) Register(string username, string password, string country, string question, string answer)
         {
             User? user = FindUser(username);
+
             if (string.IsNullOrWhiteSpace(username)
                 || string.IsNullOrWhiteSpace(password)
                 || string.IsNullOrWhiteSpace(country)
                 || string.IsNullOrWhiteSpace(question)
                 || string.IsNullOrWhiteSpace(answer))
-                return false;
+                return (false, "All fields are required.");
+
             if (user != null)
-            {
-                return false;
-            }
-            if (!IsPasswordValid(password))
-                return false;
+                return (false, "This username is already taken.");
+
+            var (isValid, passwordMessage) = IsPasswordValid(password);
+            if (!isValid)
+                return (false, passwordMessage);
 
             User newUser = new User(username, password, country, question, answer);
             _users.Add(newUser);
-            return true;
-
+            return (true, "Registration successful!");
         }
+
 
         public bool ChangePassword(string oldPassword, string newPassword)
         {

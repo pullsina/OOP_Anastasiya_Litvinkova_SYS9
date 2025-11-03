@@ -15,16 +15,23 @@ namespace CookMasterApp.Models
         //Methods
 
         //ChangePassword - finns inte i diagram
-        public bool ChangePasswordByAdmin (UserManager manager, string username, string newPassword)
+        public bool ChangePasswordByAdmin(UserManager manager, string username, string newPassword)
         {
             User? user = manager.FindUser(username);
-            if (user == null) 
+            if (user == null)
                 return false;
-            if (!UserManager.IsPasswordValid(newPassword))
+
+            var (isValid, message) = UserManager.IsPasswordValid(newPassword);
+            if (!isValid)
+            {
+                // Här kan du om du vill logga eller visa "message" i UI
                 return false;
+            }
+
             user.Password = newPassword;
             return true;
         }
+
         //RemoveAnyRecipe()
         public void RemoveAnyRecipe (RecipeManager recipeManager, Recipe recipe)
         {

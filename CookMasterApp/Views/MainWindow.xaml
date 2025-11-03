@@ -92,12 +92,17 @@
                 </StackPanel>
                 <StackPanel Grid.Row="5" Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Message}"
+                    <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="Red"
                                FontSize="13"
                                FontWeight="Bold"
                                Margin="10"/>
-                </StackPanel>
+                    <TextBlock Text="{Binding SuccessMessage}"
+                               Foreground="Green"
+                               FontSize="13"
+                               FontWeight="Bold"
+                               Margin="10"/>
+                    </StackPanel>
             </Grid>
         </StackPanel>
     </Grid>
