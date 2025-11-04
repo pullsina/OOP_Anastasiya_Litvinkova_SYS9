@@ -61,33 +61,20 @@
                 <StackPanel Grid.Row="3" Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <Button Content="Login"
-                            Width="100" 
-                            Height="30"
-                            Margin="10"
-                            BorderBrush="#ac371e"
-                            FontWeight="ExtraBold"
                             Command="{Binding LoginCommand}"
                             CommandParameter="{Binding ElementName=PasswordBox, 
                             Path=Password}"/>
                     <!--When the user clicks the button,the LoginCommand is executed,
                     and get the PasswordBox.Password value as an argument. -->
 
-                    <Button Content="Register" 
-                            Width="100"
-                            Height="30"
-                            Margin="10"
-                            BorderBrush="#ac371e"
-                            FontWeight="ExtraBlack"
+                    <Button Content="Register"
                             Command="{Binding OpenRegisterCommand}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="4" Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <Button Content="Forgot password?"
-                            Margin="10"
                             Width="150"
-                            Height="30"
                             BorderBrush="#ac371e"
-                            FontWeight="ExtraBlack"
                             Command="{Binding ForgotPasswordCommand}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="5" Orientation="Horizontal"

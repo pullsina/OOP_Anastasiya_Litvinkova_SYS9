@@ -139,6 +139,31 @@ namespace CookMasterApp.Managers
             return LoggedInUser.UpdateDetails(newUsername, newCountry);
         }
 
+        public string? GetSecurityQuestion(string username)
+    => FindUser(username)?.SecurityQuestion;
+
+        public bool CheckSecurityAnswer(string username, string answer)
+        {
+            var u = FindUser(username);
+            return u != null && string.Equals(u.SecurityAnswer, answer, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public (bool ok, string message) ResetPasswordWithSecurity(string username, string answer, string newPassword)
+        {
+            var u = FindUser(username);
+            if (u == null)
+                return (false, "User not found.");
+            if (!CheckSecurityAnswer(username, answer))
+                return (false, "Wrong answer.");
+
+            var (isValid, validationMsg) = IsPasswordValid(newPassword);
+            if (!isValid)
+                return (false, validationMsg);
+
+            u.Password = newPassword;
+            return (true, "Password has been reset.");
+        }
+
 
 
 

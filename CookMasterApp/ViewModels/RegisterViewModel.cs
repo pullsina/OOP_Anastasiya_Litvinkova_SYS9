@@ -15,9 +15,9 @@ namespace CookMasterApp.ViewModels
 {
     internal class RegisterViewModel : INotifyPropertyChanged
     {
-        // -------------------------
+    
         // PROPERTIES
-        // -------------------------
+      
 
         private string _username;
         public string Username
@@ -76,9 +76,9 @@ namespace CookMasterApp.ViewModels
             "What street did you grow up on?"
         };
 
-        // -------------------------
+      
         // VALIDATION & MESSAGES
-        // -------------------------
+      
 
         public string Message { get; set; }
         public string MessageColor { get; set; } = "Red"; // Default red (error)
@@ -128,9 +128,9 @@ namespace CookMasterApp.ViewModels
         public ICommand RegisterCommand { get; }
         public ICommand ReturnToMainCommand { get; }
 
-        // -------------------------
+       
         // CONSTRUCTORS
-        // -------------------------
+       
 
         public RegisterViewModel()
         {
@@ -146,9 +146,9 @@ namespace CookMasterApp.ViewModels
             ReturnToMainCommand = new RelayCommand(ReturnToMain);
         }
 
-        // -------------------------
+ 
         // VALIDATION METHODS
-        // -------------------------
+        
 
         private void ValidateUsername()
         {
@@ -194,9 +194,9 @@ namespace CookMasterApp.ViewModels
         }
 
 
-        // -------------------------
+  
         // COMMAND METHODS
-        // -------------------------
+       
 
         private async void Register(object parameter)
         {
@@ -258,9 +258,9 @@ namespace CookMasterApp.ViewModels
             }
         }
 
-        // -------------------------
+      
         // INotifyPropertyChanged
-        // -------------------------
+      
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string name = null)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CookMasterApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,19 @@ namespace CookMasterApp.Views
         public ForgotPasswordWindow()
         {
             InitializeComponent();
+        }
+        private void PasswordBox_OnChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ForgotPasswordViewModel vm)
+            {
+                if (ReferenceEquals(sender, PasswordBox))
+                    vm.Password = PasswordBox.Password;
+                else if (ReferenceEquals(sender, PasswordBox2))
+                    vm.ConfirmPassword = PasswordBox2.Password;
+            }
+
+            // Uppdaterar Command-systemet så att CanExecute() körs igen
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

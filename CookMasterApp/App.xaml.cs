@@ -11,6 +11,7 @@ namespace CookMasterApp
     public partial class App : Application
     {
         public static UserManager SharedUserManager { get; } = new UserManager();
+        public static RecipeManager SharedRecipeManager { get; } = new();
     }
 
 }
