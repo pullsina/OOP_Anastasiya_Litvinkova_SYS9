@@ -14,9 +14,6 @@ using System.Windows.Shapes;
 
 namespace CookMasterApp.Views
 {
-    /// <summary>
-    /// Interaction logic for RecipeDetailWindow.xaml
-    /// </summary>
     public partial class RecipeDetailWindow : Window
     {
         public RecipeDetailWindow()
@@ -25,3 +22,4 @@ namespace CookMasterApp.Views
         }
     }
 }
+

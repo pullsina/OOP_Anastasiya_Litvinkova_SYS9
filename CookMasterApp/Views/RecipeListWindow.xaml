@@ -47,7 +47,7 @@
                      FontSize="14"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      VerticalContentAlignment="Center"
-                     ToolTip="Search recipe by name, category or ingredient"/>
+                     ToolTip="Search recipe by name, category, ingredient or date"/>
             <Button Content="Search"
                     Command="{Binding SearchCommand}"/>
             <Button Content="Clear"

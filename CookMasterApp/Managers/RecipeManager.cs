@@ -55,10 +55,39 @@ namespace CookMasterApp.Managers
 
         public List<Recipe> Filter(string criteria)
         {
-            return _recipes.Where(r => r.Title.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
-                   r.Category.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
-                   r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase))).ToList();
+            if (string.IsNullOrWhiteSpace(criteria))
+                return new List<Recipe>(_recipes);
+
+            criteria = criteria.Trim();
+
+            // tolkar söktexten som datum
+            if (DateTime.TryParse(criteria, out var searchDate))
+            {
+                return _recipes.Where(r => r.Date.Date == searchDate.Date).ToList();
+            }
+
+            // tolka söktexten som ett tal (t.ex. dag eller månad)
+            if (int.TryParse(criteria, out int number))
+            {
+                return _recipes.Where(r =>
+                    r.Date.Day == number ||
+                    r.Date.Month == number ||
+                    r.Title.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                    r.Category.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                    r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            }
+
+            // Annars vanlig textfiltrering
+            return _recipes.Where(r =>
+                r.Title.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                r.Category.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase)) ||
+                r.Date.ToString("yyyy-MM-dd").Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                r.Date.ToString("dd/MM/yyyy").Contains(criteria, StringComparison.OrdinalIgnoreCase)
+            ).ToList();
         }
+
 
         public void UpdateRecipe(Recipe recipeToUpdate)
         {
