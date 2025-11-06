@@ -18,7 +18,6 @@ namespace CookMasterApp.Models
         public User CreatedBy { get; set; }
 
         //Constructor
-        public Recipe() { }
         public Recipe(string title, List <string> ingredients, string instructions, string category, User createdBy)
         {
             Title = title;

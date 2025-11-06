@@ -1,6 +1,7 @@
 ﻿using CookMasterApp.Managers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,6 @@ namespace CookMasterApp.Models
             var (isValid, message) = UserManager.IsPasswordValid(newPassword);
             if (!isValid)
             {
-                // Här kan du om du vill logga eller visa "message" i UI
                 return false;
             }
 
@@ -38,7 +38,7 @@ namespace CookMasterApp.Models
             recipeManager.RemoveRecipe(recipe);
         }
         //viewAllRecipes()
-        public List<Recipe> ViewAllRecipes(RecipeManager recipeManager)
+        public ObservableCollection<Recipe> ViewAllRecipes(RecipeManager recipeManager)
         {
             return recipeManager.GetAllRecipes();
         }

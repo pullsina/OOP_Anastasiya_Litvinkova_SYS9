@@ -96,7 +96,7 @@
                    Margin="0,15,0,0"/>
         <StackPanel Grid.Row="5" HorizontalAlignment="Center" Orientation="Horizontal">
             <TextBlock  Text="User:" FontSize="14" Margin="5"/>
-            <TextBlock Text="{Binding UserName}" FontSize="14" Margin="5" FontWeight="Medium"/>
+            <TextBlock Text="{Binding CurrentUser.Username}" FontSize="14" Margin="5" FontWeight="Medium"/>
         </StackPanel>
         
     </Grid>

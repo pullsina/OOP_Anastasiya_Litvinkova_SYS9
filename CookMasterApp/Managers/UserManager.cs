@@ -1,6 +1,7 @@
 ﻿using CookMasterApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,7 +13,7 @@ namespace CookMasterApp.Managers
     public class UserManager : INotifyPropertyChanged
     {
         private User? _loggedInUser;
-        private  List<User> _users;
+        private  ObservableCollection<User> _users;
 
 
         public bool IsAuthenticated => _loggedInUser != null;
@@ -29,9 +30,9 @@ namespace CookMasterApp.Managers
         //Constructor
         public UserManager()
         {
-            _users = new List<User>();
+            _users = new ObservableCollection<User>();
             User admin = new AdminUser("admin", "password", "Sweden", "What is your favorite food?", "Food");
-            User defaultUser = new User("user", "password", "Sweden", "What is your favorite food?", "Milk");
+            User defaultUser = new User("user", "password", "Sweden", "What is your favorite food?", "Food");
             _users.Add(admin);
             _users.Add(defaultUser);
         }
@@ -50,7 +51,6 @@ namespace CookMasterApp.Managers
 
         public User? FindUser(string username)
         {
-            System.Diagnostics.Debug.WriteLine($"DEBUG: Searching for user '{username}' in list of {_users.Count} users...");
             return _users.FirstOrDefault(usr => string.Equals(usr.Username, username, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -68,14 +68,11 @@ namespace CookMasterApp.Managers
             return false;
         }
 
-       
-
         public void Logout()
         {
             LoggedInUser = null;
         }
 
-        //IsPasswordValid (finns inte i diagrammet)
         public static (bool isValid, string message) IsPasswordValid(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
@@ -110,8 +107,16 @@ namespace CookMasterApp.Managers
             if (!isValid)
                 return (false, passwordMessage);
 
+            // normaliserar indata
+            username = username?.Trim();
+            country = country?.Trim();
+            question = question?.Trim();
+            answer = answer?.Trim().ToLowerInvariant();
+
+            // skapar en ny user
             User newUser = new User(username, password, country, question, answer);
             _users.Add(newUser);
+
             return (true, "Registration successful!");
         }
 
@@ -145,7 +150,14 @@ namespace CookMasterApp.Managers
         public bool CheckSecurityAnswer(string username, string answer)
         {
             var u = FindUser(username);
-            return u != null && string.Equals(u.SecurityAnswer, answer, StringComparison.OrdinalIgnoreCase);
+            if (u == null) return false;
+
+            var stored = u.SecurityAnswer?.Trim().ToLowerInvariant();
+            var input = answer?.Trim().ToLowerInvariant();
+
+            System.Diagnostics.Debug.WriteLine($"[CheckSecurityAnswer] stored='{stored}', input='{input}'");
+
+            return stored == input;
         }
 
         public (bool ok, string message) ResetPasswordWithSecurity(string username, string answer, string newPassword)

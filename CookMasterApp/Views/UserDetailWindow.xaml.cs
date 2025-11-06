@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CookMasterApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,19 @@ namespace CookMasterApp.Views
         public UserDetailWindow()
         {
             InitializeComponent();
+        }
+
+        private void PasswordBox_OnChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is UserDetailViewModel vm)
+            {
+                if (ReferenceEquals(sender, OldPasswordBox))
+                    vm.OldPassword = ((PasswordBox)sender).Password;
+                else if (ReferenceEquals(sender, NewPasswordBox))
+                    vm.NewPassword = ((PasswordBox)sender).Password;
+                else if (ReferenceEquals(sender, NewPasswordBox2))
+                    vm.ConfirmPassword = ((PasswordBox)sender).Password;
+            }
         }
     }
 }

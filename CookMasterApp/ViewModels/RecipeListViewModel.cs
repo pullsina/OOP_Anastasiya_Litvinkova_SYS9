@@ -22,7 +22,7 @@ namespace CookMasterApp.ViewModels
 
         private readonly RecipeManager _recipeManager;
         private readonly UserManager _userManager;
-        public string UserName { get;}
+        public User CurrentUser => _userManager.GetLoggedInUser();
         public ObservableCollection<Recipe> Recipes { get; set; }
         public Recipe SelectedRecipe { get; set; }
 
@@ -56,13 +56,33 @@ namespace CookMasterApp.ViewModels
             _userManager = App.SharedUserManager;
 
             var currentUser = _userManager.GetLoggedInUser();
-            if (currentUser is AdminUser)
-                Recipes = new ObservableCollection<Recipe>(_recipeManager.GetAllRecipes());
-            else
-                Recipes = new ObservableCollection<Recipe>(_recipeManager.GetRecipesByUser(currentUser));
 
-            UserName = currentUser.Username;
-            OnPropertyChanged(nameof(UserName));
+            if (currentUser is AdminUser)
+            {
+                // Admin ser alla resept
+                Recipes = _recipeManager.Recipes;
+            }
+            else
+            {
+                // Vanlig user ser bara sina resepter 
+                Recipes = new ObservableCollection<Recipe>(
+                    _recipeManager.Recipes.Where(r => r.CreatedBy == currentUser));
+            }
+
+            _recipeManager.Recipes.CollectionChanged += (s, e) =>
+            {
+                var currentUser = _userManager.GetLoggedInUser();
+                if (currentUser is not AdminUser)
+                {
+                    var filtered = _recipeManager.Recipes
+                        .Where(r => r.CreatedBy == currentUser)
+                        .ToList();
+
+                    Recipes.Clear();
+                    foreach (var r in filtered)
+                        Recipes.Add(r);
+                }
+            };
 
             AddRecipeCommand = new RelayCommand(OpenAddRecipe);
             ViewRecipeCommand = new RelayCommand(OpenRecipeDetails);
@@ -72,10 +92,6 @@ namespace CookMasterApp.ViewModels
             InfoCommand = new RelayCommand(ShowInfo);
             SearchCommand = new RelayCommand(SearchRecipes);
             ClearSearchCommand = new RelayCommand(ClearSearch);
-            _recipeManager.PropertyChanged += (sender, args) =>
-            {
-                RefreshRecipes();
-            }; //Updating the recipe list in UI when RecipeManager indicates that something has changed
         }
         //============METHODS==============
         private void SetMessage(string text, Brush color)
@@ -120,17 +136,33 @@ namespace CookMasterApp.ViewModels
 
         private void SearchRecipes(object p)
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-                return;
-
             var currentUser = _userManager.GetLoggedInUser();
+            var allRecipes = _recipeManager.Recipes;
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+
+                if (currentUser is not AdminUser)
+                    UpdateRecipes(allRecipes.Where(r => r.CreatedBy == currentUser));
+                else
+                    UpdateRecipes(allRecipes);
+
+                return;
+            }
+
             var filtered = _recipeManager.Filter(SearchText);
 
             if (currentUser is not AdminUser)
-                filtered = filtered.Where(r => r.CreatedBy == currentUser).ToList();
+                filtered = new ObservableCollection<Recipe>(
+                    filtered.Where(r => r.CreatedBy == currentUser));
 
-            Recipes = new ObservableCollection<Recipe>(filtered);
-            OnPropertyChanged(nameof(Recipes));
+            UpdateRecipes(filtered);
+        }
+
+        private void UpdateRecipes(IEnumerable<Recipe> newRecipes)
+        {
+            Recipes.Clear();
+            foreach (var r in newRecipes)
+                Recipes.Add(r);
         }
 
         private void RefreshRecipes()
