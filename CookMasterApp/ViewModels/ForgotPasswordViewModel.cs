@@ -16,12 +16,7 @@ namespace CookMasterApp.ViewModels
     {
         private readonly UserManager _userManager;
 
-        public ForgotPasswordViewModel()
-        {
-            _userManager = App.SharedUserManager;
-            ResetPasswordCommand = new RelayCommand(ResetPassword, CanResetPassword);
-            ReturnToMainCommand = new RelayCommand(ReturnToMain);
-        }
+      
 
         // ---------------- INPUTS ----------------
         private string _username;
@@ -91,9 +86,18 @@ namespace CookMasterApp.ViewModels
         public ICommand ResetPasswordCommand { get; }
         public ICommand ReturnToMainCommand { get; }
 
+
+        //-----------------CONSTRUCTOR---------------
+        public ForgotPasswordViewModel()
+        {
+            _userManager = App.SharedUserManager;
+            ResetPasswordCommand = new RelayCommand(ResetPassword, CanResetPassword);
+            ReturnToMainCommand = new RelayCommand(ReturnToMain);
+        }
+
         // ---------------- LOGIC ----------------
 
-        private void LoadSecurityQuestion()
+        private void LoadSecurityQuestion()//metoden för att få den frågan som användare valt under register
         {
             if (string.IsNullOrWhiteSpace(Username))
             {
@@ -102,7 +106,7 @@ namespace CookMasterApp.ViewModels
             }
             else
             {
-                var question = _userManager.GetSecurityQuestion(Username);
+                var question = _userManager.GetSecurityQuestion(Username);//tar frågan från UserManager
                 if (question == null)
                 {
                     SecurityQuestion = "";
@@ -148,12 +152,12 @@ namespace CookMasterApp.ViewModels
             OnPropertyChanged(nameof(ConfirmPasswordColor));
         }
 
-        public void Invalidate()
-        {
-            ValidatePassword();
-            ValidatePasswordsMatch();
-            CommandManager.InvalidateRequerySuggested();
-        }
+        //public void Invalidate()
+        //{
+        //    ValidatePassword();
+        //    ValidatePasswordsMatch();
+        //    CommandManager.InvalidateRequerySuggested();
+        //}
 
         private async void ResetPassword(object _)
         {
@@ -172,19 +176,18 @@ namespace CookMasterApp.ViewModels
             {
                 await Task.Delay(800);
 
-                var main = new MainWindow { DataContext = new MainViewModel(_userManager) };
+                var main = new MainWindow();
                 main.Show();
 
                 foreach (var w in Application.Current.Windows)
-                    if (w is ForgotPasswordWindow fp)
-                        fp.Close();
+                    if (w is ForgotPasswordWindow fp)fp.Close();
             }
         }
 
         private bool CanResetPassword(object _)
         {
             var (isValid, _) = UserManager.IsPasswordValid(Password);
-
+            // _  ignorerar meddelandet, eftersom det inte behövs i den här metoden.
             return !string.IsNullOrWhiteSpace(Username)
                 && !string.IsNullOrWhiteSpace(SecurityQuestion)
                 && !string.IsNullOrWhiteSpace(SecurityAnswer)
@@ -194,12 +197,11 @@ namespace CookMasterApp.ViewModels
 
         private void ReturnToMain(object _)
         {
-            var main = new MainWindow { DataContext = new MainViewModel(_userManager) };
+            var main = new MainWindow ();
             main.Show();
 
             foreach (var w in Application.Current.Windows)
-                if (w is ForgotPasswordWindow fp)
-                    fp.Close();
+                if (w is ForgotPasswordWindow fp)fp.Close();
         }
 
         // ---------------- PROPERTYCHANGED ----------------

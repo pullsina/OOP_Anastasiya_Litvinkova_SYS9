@@ -40,7 +40,8 @@ namespace CookMasterApp.ViewModels
             }
         }
 
-
+        // returnerar true om fältet inte redigeras
+        // När _isEditing är false IsReadOnly blir true (fältet går inte att ändra)
         public bool IsReadOnly => !_isEditing;
 
         public string Title { get; set; }
@@ -76,6 +77,9 @@ namespace CookMasterApp.ViewModels
         }
 
         //Methods
+        // Aktiverar redigeringsläge
+        // Sätter IsEditing till true för att markera att användaren redigerar data,
+        // och CanEditControls till true så att kontroller t.ex. TextBoxar, knappar blir aktiva i UI
         private void StartEditing(object p)
         {
             IsEditing = true;
@@ -138,10 +142,11 @@ namespace CookMasterApp.ViewModels
                 currentUser);
 
             _recipeManager.AddRecipe(newRecipe);
+
             MessageBox.Show("Recipe copied and saved as new!", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+            
             foreach (var w in Application.Current.Windows)
-                if (w is RecipeDetailWindow rw)
-                    rw.Close();
+                if (w is RecipeDetailWindow rw)rw.Close();
         }
 
         private void BackToList(object p)

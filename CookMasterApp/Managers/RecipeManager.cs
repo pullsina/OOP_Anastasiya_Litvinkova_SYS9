@@ -81,15 +81,20 @@ namespace CookMasterApp.Managers
             return userRecipes;
         }
 
-
+        // Filtrerar recepten baserat på användarens söktext (criteria).
+        // Returnerar alltid en "ny" ObservableCollection så att UI uppdateras korrekt,
+        // och för att undvika att manipulera den ursprungliga listan direkt.
         public ObservableCollection<Recipe> Filter(string criteria)
         {
-            // всегда создаём новую коллекцию — не возвращаем оригинальную ссылку
+            // Om sökfältet är tomt eller bara innehåller mellanslag returnerar alla recept.
             if (string.IsNullOrWhiteSpace(criteria))
                 return new ObservableCollection<Recipe>(_recipes);
 
+            // Tar bort onödiga mellanslag runt söktexten.
             criteria = criteria.Trim();
 
+            // Försöker tolka söktexten som ett datum (t.ex. "2025-11-07").
+            // Om det lyckas returnerar recept med samma datum.
             if (DateTime.TryParse(criteria, out var searchDate))
             {
                 return new ObservableCollection<Recipe>(
@@ -97,7 +102,8 @@ namespace CookMasterApp.Managers
                             .OrderByDescending(r => r.Date));
             }
 
-            // поиск по году
+            // Om användaren skrev in ett fyrsiffrigt tal (t.ex. "2024"),
+            // tolkar vi det som ett år och visar recept från det året
             if (criteria.Length == 4 && int.TryParse(criteria, out int year))
             {
                 return new ObservableCollection<Recipe>(
@@ -105,7 +111,8 @@ namespace CookMasterApp.Managers
                             .OrderByDescending(r => r.Date));
             }
 
-            // поиск по числу, месяцу или тексту
+            // Annars söker vi efter textmatchningar i titel, kategori eller ingredienser,
+            // samt i receptdatum i olika format.
             return new ObservableCollection<Recipe>(
                 _recipes.Where(r =>
                     r.Title.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
@@ -113,11 +120,9 @@ namespace CookMasterApp.Managers
                     r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase)) ||
                     r.Date.ToString("yyyy-MM-dd").Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
                     r.Date.ToString("dd/MM/yyyy").Contains(criteria, StringComparison.OrdinalIgnoreCase))
-                .OrderByDescending(r => r.Date)
+                .OrderByDescending(r => r.Date) // sorterar recepten så att de nyaste visas först
             );
         }
-
-
 
         public void UpdateRecipe(Recipe recipeToUpdate)
         {
@@ -125,7 +130,8 @@ namespace CookMasterApp.Managers
             OnPropertyChanged(nameof(Recipes));
         }
 
-
+        // Uppdaterar ett befintligt recept.
+        // Anropar metodens EditRecipe() på det valda receptet för att spara ändringar
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {

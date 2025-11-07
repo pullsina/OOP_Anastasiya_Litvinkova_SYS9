@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace CookMasterApp.Models
 {
-    public class User : INotifyPropertyChanged //för att Username uppdaterades i RecipeList
-                                               //när man ändrar den i UserDetails
+    // Klassen implementerar INotifyPropertyChanged för att gränssnittet (UI)
+    // automatiskt ska uppdateras när en användares egenskaper, t.ex. Username,
+    // ändras i fönster som UserDetails och visas i t.ex. RecipeList.
+    public class User : INotifyPropertyChanged 
     {
         //Property
         private string _username;

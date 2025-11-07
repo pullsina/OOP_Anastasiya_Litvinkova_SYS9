@@ -23,6 +23,11 @@ namespace CookMasterApp.Views
         {
             InitializeComponent();
         }
+        // Hanterar händelsen PasswordChanged för PasswordBox i MainWindow.
+        // Eftersom PasswordBox.Password inte kan bindas direkt till ViewModel,
+        // uppdateras lösenordet manuellt i MainViewModel varje gång användaren skriver något.
+        // CommandManager.InvalidateRequerySuggested() anropas för att aktivera/deaktivera knappar 
+        // som är beroende av om lösenordet är ifyllt (t.ex. LoginCommand).
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.MainViewModel vm)

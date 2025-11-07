@@ -103,6 +103,9 @@ namespace CookMasterApp.ViewModels
             {
                 DataContext = new RecipeDetailViewModel(SelectedRecipe)
             };
+            // Här kopplas fönstrets DataContext till en ny instans av RecipeDetailViewModel,
+            // och vi skickar in det recept som användaren valt. så att fönstret får
+            // tillgång till rätt data via MVVM bindningen
             detailWindow.Show();
         }
 
@@ -143,10 +146,6 @@ namespace CookMasterApp.ViewModels
         }
 
 
-
-
-
-
         private void ClearSearch(object p)
         {
             SearchText = "";
@@ -154,6 +153,11 @@ namespace CookMasterApp.ViewModels
             SetMessage("Search cleared.", Brushes.Gray);
         }
 
+        // Uppdaterar listan med recept i vyn beroende på vem som är inloggad
+        // Om det är en admin visas alla recept från RecipeManager
+        // Annars filtreras listan så att endast de recept som skapats av den aktuella användaren visas
+        // Metoden rensar sedan nuvarande ObservableCollection (Recipes) och fyller den på nytt
+        // för att UI ska uppdateras automatiskt.
         private void RefreshFilteredRecipes()
         {
             var currentUser = _userManager.GetLoggedInUser();
@@ -181,7 +185,7 @@ namespace CookMasterApp.ViewModels
         private void SignOut(object p)
         {
             _userManager.Logout();
-            var main = new MainWindow { DataContext = new MainViewModel(_userManager) };
+            var main = new MainWindow { DataContext = new MainViewModel() };
             main.Show();
             foreach (var w in Application.Current.Windows)
                 if (w is RecipeListWindow rl) rl.Close();

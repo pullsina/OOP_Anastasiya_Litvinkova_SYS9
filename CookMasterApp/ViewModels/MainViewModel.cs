@@ -14,6 +14,7 @@ namespace CookMasterApp.ViewModels
     internal class MainViewModel : INotifyPropertyChanged
     {
         //props
+        private readonly UserManager _userManager;
         private string _username;
        
         public string Username
@@ -44,22 +45,16 @@ namespace CookMasterApp.ViewModels
         public string SuccessMessage { get; set; }
         public string Message { get; set; }
         public string MessageColor { get; set; }
+        //här har jag lite blandade messages
+        //Jag borde bara ha lämnat Message och MessageColor, men det finns ingen tid nu
+
+        //Props för ICommands
         public ICommand LoginCommand { get; }
         public ICommand OpenRegisterCommand { get; }
         public ICommand ForgotPasswordCommand { get; }
         public ICommand VerifyCodeCommand { get; }
-
-        private readonly UserManager _userManager;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        private string _verificationCode;
-        private string _enteredCode;
-        private Visibility _codeFieldVisibility = Visibility.Collapsed;
-
+ 
+        //Props för 2FA
         public string EnteredCode
         {
             get => _enteredCode;
@@ -69,8 +64,9 @@ namespace CookMasterApp.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public Visibility CodeFieldVisibility
+        // Visibility används för att visa, gömma eller dölja WPFelement dynamiskt
+        //t.ex.när användaren loggar in, klickar på en knapp eller ska bekräfta något(som 2FA kodruta dyker upp).
+        public Visibility CodeFieldVisibility 
         {
             get => _codeFieldVisibility;
             set
@@ -80,7 +76,7 @@ namespace CookMasterApp.ViewModels
             }
         }
 
-        //Constructor
+        //--------CONSTRUCTOR-----------
         public MainViewModel()
         {
             _userManager = App.SharedUserManager;
@@ -88,38 +84,28 @@ namespace CookMasterApp.ViewModels
             OpenRegisterCommand = new RelayCommand(OpenRegister);
             ForgotPasswordCommand = new RelayCommand(ResetPassword);
             VerifyCodeCommand = new RelayCommand(VerifyCode);
-
         }
-        public MainViewModel(UserManager sharedManager)
-        {
-            _userManager = sharedManager;
-            LoginCommand = new RelayCommand(Login, CanLogin);
-            OpenRegisterCommand = new RelayCommand(OpenRegister);
-            ForgotPasswordCommand = new RelayCommand(ResetPassword);
-            VerifyCodeCommand = new RelayCommand(VerifyCode);
-
-        }
-
 
 
         //Methods
         private void Login(object parameter)
         {
-            string password = Password ?? "";
+            string password = Password ?? ""; //Om Password är null => använd en tom sträng istället.
+            //annars kan krasha
 
-            // сбрасываем старые сообщения
+            // rensar gamla meddelande
             ErrorMessage = "";
             SuccessMessage = "";
             OnPropertyChanged(nameof(ErrorMessage));
             OnPropertyChanged(nameof(SuccessMessage));
 
-            // проверяем логин и пароль
+            // kontrollerar username och lösenord
             bool success = _userManager.Login(Username, password);
 
             if (success)
             {
-                // не открываем окно рецептов сразу!
-                // вместо этого запускаем имитацию отправки кода
+                // Öppna inte RecipeList direkt
+                // istället kör en simulering av kodsändning
                 SendVerificationCode();
             }
             else
@@ -129,23 +115,22 @@ namespace CookMasterApp.ViewModels
             }
         }
 
-        private bool CanLogin (object property)
+        private bool CanLogin (object property) 
         {            
-            return !string.IsNullOrWhiteSpace(Username);
+            return !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
         }
         private void OpenRegister(object parameter)
         {
             //Open RegisterWindow
-            var registerWindow = new RegisterWindow
-            {
-                DataContext = new RegisterViewModel(_userManager)
-            };
+            var registerWindow = new RegisterWindow();
             registerWindow.Show();
             //Close MainWindow
             foreach (var w in System.Windows.Application.Current.Windows)
             {
                 if (w is MainWindow main) main.Close();
             }
+            // Koden går igenom alla fönster som är öppna i programmet just nu.
+            // Om något av dem är MainWindow, så stängs det.
         }
         private void ResetPassword(object parameter)
         {
@@ -158,9 +143,9 @@ namespace CookMasterApp.ViewModels
         }
         private void SendVerificationCode()
         {
-            var random = new Random();
-            _verificationCode = random.Next(100000, 999999).ToString(); // шесть цифр
-            CodeFieldVisibility = Visibility.Visible;
+            var random = new Random(); //slumpar ett tal
+            _verificationCode = random.Next(100000, 999999).ToString();//ToString eftersom EnteredCode är string
+            CodeFieldVisibility = Visibility.Visible; //gör fältet med kodinmätning sinligt
 
             // kopiera koden direkt till urklipp, annars blir det jobbigt att testa
             Clipboard.SetText(_verificationCode);
@@ -179,20 +164,16 @@ namespace CookMasterApp.ViewModels
             OnPropertyChanged(nameof(MessageColor));
         }
 
-        private void VerifyCode(object _)
+        private void VerifyCode(object p)
         {
             if (_enteredCode == _verificationCode)
             {
                 // lyckad kodkontroll öppnar RecipeListWindow
-                var recipeList = new RecipeListWindow
-                {
-                    DataContext = new RecipeListViewModel()
-                };
+                var recipeList = new RecipeListWindow();
                 recipeList.Show();
-
+                //Closing Main
                 foreach (var w in Application.Current.Windows)
-                    if (w is MainWindow mw)
-                        mw.Close();
+                    if (w is MainWindow main)main.Close();
             }
             else
             {
@@ -203,6 +184,14 @@ namespace CookMasterApp.ViewModels
             }
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        private string _verificationCode;
+        private string _enteredCode;
+        private Visibility _codeFieldVisibility = Visibility.Collapsed;
     }
 
 }

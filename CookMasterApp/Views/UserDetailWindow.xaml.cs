@@ -25,6 +25,10 @@ namespace CookMasterApp.Views
             InitializeComponent();
         }
 
+        // Den här metoden hanterar PasswordChanged för alla PasswordBox kontroller i UserDetailWindow.
+        // Eftersom PasswordBox av säkerhetsskäl inte kan bindas direkt till en ViewModel via XAML,
+        // uppdateras lösenordsfälten manuellt i ViewModel (UserDetailViewModel) när användaren skriver
+        // Vilket fält som uppdateras avgörs genom att jämföra vilken PasswordBox som utlöste händelsen
         private void PasswordBox_OnChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext is UserDetailViewModel vm)

@@ -73,7 +73,7 @@ namespace CookMasterApp.Managers
             LoggedInUser = null;
         }
 
-        public static (bool isValid, string message) IsPasswordValid(string password)
+        public static (bool isValid, string message) IsPasswordValid(string password) //Tuple
         {
             if (string.IsNullOrWhiteSpace(password))
                 return (false, "Password cannot be empty.");
@@ -138,14 +138,23 @@ namespace CookMasterApp.Managers
             if (LoggedInUser == null)
                 return false;
 
-            bool occupied = _users.Any(u => !u.Username.Equals(LoggedInUser.Username, StringComparison.OrdinalIgnoreCase) && string.Equals(u.Username, newUsername, StringComparison.OrdinalIgnoreCase));
+            bool occupied = _users.Any(u => !u.Username.Equals(LoggedInUser.Username, 
+                StringComparison.OrdinalIgnoreCase) 
+            && string.Equals(u.Username, newUsername, 
+            StringComparison.OrdinalIgnoreCase));
             if (occupied)
                 return false;
             return LoggedInUser.UpdateDetails(newUsername, newCountry);
         }
 
+        // Returnerar säkerhetsfrågan för den användare som matchar angivet användarnamn
+        // Om användaren inte finns (FindUser returnerar null) returneras null istället.
         public string? GetSecurityQuestion(string username)
-    => FindUser(username)?.SecurityQuestion;
+        {
+            var user = FindUser(username);
+            return user?.SecurityQuestion;
+        }
+
 
         public bool CheckSecurityAnswer(string username, string answer)
         {
@@ -154,9 +163,6 @@ namespace CookMasterApp.Managers
 
             var stored = u.SecurityAnswer?.Trim().ToLowerInvariant();
             var input = answer?.Trim().ToLowerInvariant();
-
-            System.Diagnostics.Debug.WriteLine($"[CheckSecurityAnswer] stored='{stored}', input='{input}'");
-
             return stored == input;
         }
 

@@ -4,6 +4,7 @@ using MVVM_KlonaMIg.MVVM;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -15,10 +16,9 @@ namespace CookMasterApp.ViewModels
 {
     internal class RegisterViewModel : INotifyPropertyChanged
     {
-    
-        // PROPERTIES
-      
 
+        // PROPERTIES
+        private readonly UserManager _userManager;
         private string _username;
         public string Username
         {
@@ -26,9 +26,10 @@ namespace CookMasterApp.ViewModels
             set
             {
                 _username = value;
-                ValidateUsername();
+                ValidateUsername();//för att få meddelande direkt vid unmätning 
                 OnPropertyChanged();
-                CommandManager.InvalidateRequerySuggested();
+                CommandManager.InvalidateRequerySuggested();//Det gör att WPF kollar om
+                //knappar som är bundna till ICommand ska vara aktiva eller inaktiva
             }
         }
 
@@ -86,7 +87,7 @@ namespace CookMasterApp.ViewModels
         public string PasswordMessage { get; set; }
         public string ConfirmPasswordMessage { get; set; }
         private string _confirmPasswordColor = "Black";
-        public string ConfirmPasswordColor
+        public string ConfirmPasswordColor//ändrar på text färg från "inuti"
         {
             get => _confirmPasswordColor;
             set
@@ -104,7 +105,7 @@ namespace CookMasterApp.ViewModels
             set
             {
                 _password = value;
-                ValidatePassword();
+                ValidatePassword();//kontrollerar passwords direkt vid inmätning 
                 ValidatePasswordsMatch();
                 OnPropertyChanged();
                 CommandManager.InvalidateRequerySuggested();
@@ -123,8 +124,6 @@ namespace CookMasterApp.ViewModels
                 CommandManager.InvalidateRequerySuggested();
             }
         }
-
-        private readonly UserManager _userManager;
         public ICommand RegisterCommand { get; }
         public ICommand ReturnToMainCommand { get; }
 
@@ -139,16 +138,8 @@ namespace CookMasterApp.ViewModels
             ReturnToMainCommand = new RelayCommand(ReturnToMain);
         }
 
-        public RegisterViewModel(UserManager sharedManager)
-        {
-            _userManager = sharedManager;
-            RegisterCommand = new RelayCommand(Register, CanRegister);
-            ReturnToMainCommand = new RelayCommand(ReturnToMain);
-        }
-
  
-        // VALIDATION METHODS
-        
+        // VALIDATION METHODS  
 
         private void ValidateUsername()
         {
@@ -167,7 +158,11 @@ namespace CookMasterApp.ViewModels
         private void ValidatePassword()
         {
             var (isValid, message) = UserManager.IsPasswordValid(Password);
+            // Anropar metoden IsPasswordValid i UserManager, som returnerar en "tuple":
+            // ett bool-värde (isValid) och ett meddelande (message).
             PasswordMessage = isValid ? "" : message;
+            // Om isValid är true => inget felmeddelande,
+            // annars visas meddelandet som kom från UserManager.
             OnPropertyChanged(nameof(PasswordMessage));
         }
 
@@ -198,9 +193,12 @@ namespace CookMasterApp.ViewModels
         // COMMAND METHODS
        
 
-        private async void Register(object parameter)
+        private async void Register(object parameter)//async så att utförandet av ett kommando kan fördröjas
         {
             string password = parameter is PasswordBox pb ? pb.Password : "";
+            //Om parameter är ett PasswordBox-objekt
+            //ta texten från dess Password fält,
+            //annars använd en tom sträng.
 
             var (success, message) = _userManager.Register(Username, password, SelectedCountry, SelectedSecurityQuestion, SecurityAnswer);
 
@@ -212,10 +210,7 @@ namespace CookMasterApp.ViewModels
             if (success)
             {
                 await Task.Delay(700); // låt användaren se "Registration successful!"
-                var mainWindow = new MainWindow
-                {
-                    DataContext = new MainViewModel(_userManager)
-                };
+                var mainWindow = new MainWindow();
                 mainWindow.Show();
 
                 foreach (var w in Application.Current.Windows)
@@ -227,12 +222,19 @@ namespace CookMasterApp.ViewModels
 
         private bool CanRegister(object parameter)
         {
+            // kntrollerar att parameter verkligen är en PasswordBox.
+            // Om iinte avsluta metoden (return false) eftersom vi inte kan läsa något lösenord.
             if (parameter is not PasswordBox passwordBox)
                 return false;
+            // Hämtar det första lösenordet som användaren skrev in
             var mainPassword = passwordBox.Password;
-
+            // Hämtar det aktuella RegisterWindow från alla öppna fönster i appen.
             var registerWindow = Application.Current.Windows.OfType<RegisterWindow>().FirstOrDefault();
+            //Letar upp den andra PasswordBox(PasswordBox2) i fönstret,
+            // dvs. rutan där användaren bekräftar lösenordet.
             var confirmPasswordBox = registerWindow?.FindName("PasswordBox2") as PasswordBox;
+            // Hämtar texten från den andra lösenordsrutan.
+            // Om den är null (t.ex. rutan hittades inte), används en tom sträng istället.
             var confirmPassword = confirmPasswordBox?.Password ?? "";
 
             return !string.IsNullOrWhiteSpace(Username)
@@ -246,10 +248,7 @@ namespace CookMasterApp.ViewModels
 
         private void ReturnToMain(object parameter)
         {
-            var mainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel(_userManager)
-            };
+            var mainWindow = new MainWindow();
             mainWindow.Show();
 
             foreach (var w in Application.Current.Windows)
