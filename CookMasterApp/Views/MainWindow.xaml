@@ -5,94 +5,121 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:CookMasterApp.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="550" Width="800">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
     <ScrollViewer>
-    <Grid Background="#d6bea4">
-        <StackPanel>
-            <Label Content="CookMaster"
+        <Grid Background="#d6bea4">
+            <StackPanel>
+                <Label Content="CookMaster"
                FontSize="50"
                FontWeight="ExtraBold"
                Foreground="#ac371e"
                HorizontalAlignment="Center"/>
-            <Grid Background="#efe2da" Margin="70,0,70,50">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Label Content="Log In"
+                <Grid Background="#efe2da" Margin="70,0,70,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+
+                    </Grid.RowDefinitions>
+                    <Label Content="Log In"
                    FontSize="30"
                    FontWeight="ExtraBold"
                    Foreground="#3A464B"
                    HorizontalAlignment="Center"
                    Margin="0, 10, 0, 30"/>
-                <StackPanel Grid.Row="1" Margin="15, 0, 0, 10" 
+                    <StackPanel Grid.Row="1" Margin="15, 0, 0, 10" 
                             Orientation="Horizontal"
                             HorizontalAlignment="Left">
-                    <TextBlock Text="USERNAME:"
+                        <TextBlock Text="USERNAME:"
                                Foreground="#312d2a"                
                                FontSize="20"
                                FontWeight="Medium"
                                Margin="0, 0, 20, 0"/>
-                    <TextBox  Width="400" 
+                        <TextBox  Width="400" 
                               Text="{Binding Username, 
                               UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="2" Margin="15, 0, 0, 10" 
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Margin="15, 0, 0, 10" 
                             Orientation="Horizontal"
                             HorizontalAlignment="Left">
-                    <TextBlock Text="PASSWORD:"
+                        <TextBlock Text="PASSWORD:"
                                Foreground="#312d2a"
                                HorizontalAlignment="Left"
                                FontSize="20"
                                FontWeight="Medium"
                                Margin="0, 0, 20, 0"/>
-                    <PasswordBox  x:Name="PasswordBox"
+                        <PasswordBox  x:Name="PasswordBox"
                                Width="400" 
                                HorizontalAlignment="Center"
                                PasswordChanged="PasswordBox_OnPasswordChanged"/>
-                </StackPanel>
-                <StackPanel Grid.Row="3" Orientation="Horizontal"
+                    </StackPanel>
+                    <!-- Verification code -->
+                    <StackPanel Grid.Row="3" 
+                                Visibility="{Binding CodeFieldVisibility}" 
+                                Margin="0,10,0,0" 
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="Enter verification code:" 
+                                   FontWeight="SemiBold"                                   
+                                   Margin="5"
+                                   FontSize="16"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding EnteredCode, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="100" 
+                                 Height="30"
+                                 Margin="5"/>
+                        <Button Content="Verify" 
+                                Command="{Binding VerifyCodeCommand}" 
+                                Width="100"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding Message}" 
+                                   Foreground="{Binding MessageColor}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="5" Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <Button Content="Login"
+                        <Button Content="Login"
                             Command="{Binding LoginCommand}"
                             CommandParameter="{Binding ElementName=PasswordBox, 
                             Path=Password}"/>
-                    <!--When the user clicks the button,the LoginCommand is executed,
+                        <!--When the user clicks the button,the LoginCommand is executed,
                     and get the PasswordBox.Password value as an argument. -->
 
-                    <Button Content="Register"
+                        <Button Content="Register"
                             Command="{Binding OpenRegisterCommand}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="4" Orientation="Horizontal"
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <Button Content="Forgot password?"
+                        <Button Content="Forgot password?"
                             Width="150"
                             BorderBrush="#ac371e"
                             Command="{Binding ForgotPasswordCommand}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="5" Orientation="Horizontal"
+                    </StackPanel>
+                    <StackPanel Grid.Row="7" Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding ErrorMessage}"
+                        <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="Red"
                                FontSize="13"
                                FontWeight="Bold"
                                Margin="10"/>
-                    <TextBlock Text="{Binding SuccessMessage}"
+                        <TextBlock Text="{Binding SuccessMessage}"
                                Foreground="Green"
                                FontSize="13"
                                FontWeight="Bold"
                                Margin="10"/>
                     </StackPanel>
-            </Grid>
-        </StackPanel>
-    </Grid>
+                </Grid>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 
 </Window>

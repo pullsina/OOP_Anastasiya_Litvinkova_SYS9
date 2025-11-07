@@ -42,15 +42,42 @@ namespace CookMasterApp.ViewModels
         }
         public string ErrorMessage { get; set; }
         public string SuccessMessage { get; set; }
+        public string Message { get; set; }
+        public string MessageColor { get; set; }
         public ICommand LoginCommand { get; }
         public ICommand OpenRegisterCommand { get; }
         public ICommand ForgotPasswordCommand { get; }
+        public ICommand VerifyCodeCommand { get; }
+
         private readonly UserManager _userManager;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        private string _verificationCode;
+        private string _enteredCode;
+        private Visibility _codeFieldVisibility = Visibility.Collapsed;
+
+        public string EnteredCode
+        {
+            get => _enteredCode;
+            set
+            {
+                _enteredCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Visibility CodeFieldVisibility
+        {
+            get => _codeFieldVisibility;
+            set
+            {
+                _codeFieldVisibility = value;
+                OnPropertyChanged();
+            }
         }
 
         //Constructor
@@ -60,6 +87,8 @@ namespace CookMasterApp.ViewModels
             LoginCommand = new RelayCommand(Login, CanLogin);
             OpenRegisterCommand = new RelayCommand(OpenRegister);
             ForgotPasswordCommand = new RelayCommand(ResetPassword);
+            VerifyCodeCommand = new RelayCommand(VerifyCode);
+
         }
         public MainViewModel(UserManager sharedManager)
         {
@@ -67,39 +96,39 @@ namespace CookMasterApp.ViewModels
             LoginCommand = new RelayCommand(Login, CanLogin);
             OpenRegisterCommand = new RelayCommand(OpenRegister);
             ForgotPasswordCommand = new RelayCommand(ResetPassword);
+            VerifyCodeCommand = new RelayCommand(VerifyCode);
+
         }
 
 
+
         //Methods
-        private async void Login(object parameter)
+        private void Login(object parameter)
         {
             string password = Password ?? "";
-            bool success = _userManager.Login(Username, password);
+
+            // сбрасываем старые сообщения
             ErrorMessage = "";
             SuccessMessage = "";
             OnPropertyChanged(nameof(ErrorMessage));
             OnPropertyChanged(nameof(SuccessMessage));
+
+            // проверяем логин и пароль
+            bool success = _userManager.Login(Username, password);
+
             if (success)
             {
-                //Open RecipeListWindow
-                SuccessMessage = "Login successful!";
-                OnPropertyChanged(nameof(SuccessMessage));
-                await Task.Delay(500); // halv sekunds paus
-                var recipeList = new RecipeListWindow();
-                recipeList.Show();
-
-                //Closing MainWindow
-                foreach (var w in System.Windows.Application.Current.Windows)
-                {
-                    if (w is MainWindow main) main.Close();
-                }
+                // не открываем окно рецептов сразу!
+                // вместо этого запускаем имитацию отправки кода
+                SendVerificationCode();
             }
             else
             {
                 ErrorMessage = "Invalid username or password.";
                 OnPropertyChanged(nameof(ErrorMessage));
-            }                            
+            }
         }
+
         private bool CanLogin (object property)
         {            
             return !string.IsNullOrWhiteSpace(Username);
@@ -127,6 +156,53 @@ namespace CookMasterApp.ViewModels
                 if (w is MainWindow main) main.Close();
             }
         }
+        private void SendVerificationCode()
+        {
+            var random = new Random();
+            _verificationCode = random.Next(100000, 999999).ToString(); // шесть цифр
+            CodeFieldVisibility = Visibility.Visible;
+
+            // kopiera koden direkt till urklipp, annars blir det jobbigt att testa
+            Clipboard.SetText(_verificationCode);
+
+            // visar meddelande
+            MessageBox.Show(
+                $"Verification code (copied to clipboard): {_verificationCode}",
+                "2FA Verification",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+
+            //visa statusen i gränssnittet
+            Message = "Verification code sent to your email (copied to clipboard).";
+            MessageColor = "DarkSlateBlue";
+            OnPropertyChanged(nameof(Message));
+            OnPropertyChanged(nameof(MessageColor));
+        }
+
+        private void VerifyCode(object _)
+        {
+            if (_enteredCode == _verificationCode)
+            {
+                // lyckad kodkontroll öppnar RecipeListWindow
+                var recipeList = new RecipeListWindow
+                {
+                    DataContext = new RecipeListViewModel()
+                };
+                recipeList.Show();
+
+                foreach (var w in Application.Current.Windows)
+                    if (w is MainWindow mw)
+                        mw.Close();
+            }
+            else
+            {
+                Message = "Incorrect verification code.";
+                MessageColor = "Red";
+                OnPropertyChanged(nameof(Message));
+                OnPropertyChanged(nameof(MessageColor));
+            }
+        }
+
     }
 
 }

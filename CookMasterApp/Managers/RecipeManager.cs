@@ -50,17 +50,22 @@ namespace CookMasterApp.Managers
             if (!_recipes.Contains(recipe))
             {
                 _recipes.Add(recipe);
+                OnPropertyChanged(nameof(Recipes));
             }
         }
 
         public void RemoveRecipe(Recipe recipe)
         {
-            _recipes.Remove(recipe);
+            if (_recipes.Contains(recipe))
+            {
+                _recipes.Remove(recipe);
+                OnPropertyChanged(nameof(Recipes));
+            }
         }
 
         public ObservableCollection<Recipe> GetAllRecipes()
         {
-            return new ObservableCollection<Recipe>(_recipes); //skapar en klon av listan
+            return _recipes;
         }
 
         public ObservableCollection<Recipe> GetRecipesByUser(User user)
@@ -79,44 +84,45 @@ namespace CookMasterApp.Managers
 
         public ObservableCollection<Recipe> Filter(string criteria)
         {
+            // всегда создаём новую коллекцию — не возвращаем оригинальную ссылку
             if (string.IsNullOrWhiteSpace(criteria))
                 return new ObservableCollection<Recipe>(_recipes);
 
             criteria = criteria.Trim();
 
-            // tolkar söktexten som datum
             if (DateTime.TryParse(criteria, out var searchDate))
             {
-                return new ObservableCollection<Recipe>(_recipes.Where(r => r.Date.Date ==searchDate.Date));
+                return new ObservableCollection<Recipe>(
+                    _recipes.Where(r => r.Date.Date == searchDate.Date)
+                            .OrderByDescending(r => r.Date));
             }
 
-            // tolka söktexten som ett tal (t.ex. dag eller månad)
-            if (int.TryParse(criteria, out int number))
+            // поиск по году
+            if (criteria.Length == 4 && int.TryParse(criteria, out int year))
             {
-                return new ObservableCollection<Recipe> (_recipes.Where(r =>
-                    r.Date.Day == number ||
-                    r.Date.Month == number ||
+                return new ObservableCollection<Recipe>(
+                    _recipes.Where(r => r.Date.Year == year)
+                            .OrderByDescending(r => r.Date));
+            }
+
+            // поиск по числу, месяцу или тексту
+            return new ObservableCollection<Recipe>(
+                _recipes.Where(r =>
                     r.Title.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
                     r.Category.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
-                    r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase))
-                ));
-            }
-
-            // Annars vanlig textfiltrering
-            return new ObservableCollection<Recipe>(_recipes.Where(r =>
-                r.Title.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
-                r.Category.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
-                r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase)) ||
-                r.Date.ToString("yyyy-MM-dd").Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
-                r.Date.ToString("dd/MM/yyyy").Contains(criteria, StringComparison.OrdinalIgnoreCase)
-            ));
+                    r.Ingredients.Any(i => i.Contains(criteria, StringComparison.OrdinalIgnoreCase)) ||
+                    r.Date.ToString("yyyy-MM-dd").Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                    r.Date.ToString("dd/MM/yyyy").Contains(criteria, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(r => r.Date)
+            );
         }
+
 
 
         public void UpdateRecipe(Recipe recipeToUpdate)
         {
             recipeToUpdate.EditRecipe();
-            //OnPropertyChanged(nameof(Recipes));
+            OnPropertyChanged(nameof(Recipes));
         }
 
 
